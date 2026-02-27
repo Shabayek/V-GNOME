@@ -1,0 +1,65 @@
+{
+  "name": "V-GNOME Hackathon Terminal",
+  "id": "vgnome-hackathon",
+  "width": 1200,
+  "height": 800,
+  "page": 0,
+  "pages": [
+    {
+      "id": "page-1",
+      "name": "Main Page",
+      "style": {
+        "background": "#0F172A"
+      },
+      "elements": [
+        {
+          "id": "element-1",
+          "name": "Title",
+          "type": "element",
+          "position": {
+            "top": 40,
+            "left": 40,
+            "height": 100,
+            "width": 1000,
+            "angle": 0,
+            "parent": null
+          },
+          "expression": "markdown '# V-GNOME GENOMIC INTELLIGENCE' | render css='.canvasRenderEl h1 { color: #38BDF8; font-family: sans-serif; }'"
+        },
+        {
+          "id": "element-2",
+          "name": "Genomes Metric",
+          "type": "element",
+          "position": {
+            "top": 160,
+            "left": 40,
+            "height": 150,
+            "width": 300,
+            "angle": 0,
+            "parent": null
+          },
+          "expression": "essql query='SELECT count(*) as total FROM \"genomic_profiles\"' | math 'total' | metric label='Genomes Indexed'"
+        },
+        {
+          "id": "element-3",
+          "name": "Species Metric",
+          "type": "element",
+          "position": {
+            "top": 160,
+            "left": 360,
+            "height": 150,
+            "width": 300,
+            "angle": 0,
+            "parent": null
+          },
+          "expression": "essql query='SELECT count(DISTINCT cluster_id) as total FROM \"genomic_profiles\"' | math 'total' | metric label='Unique Species'"
+        }
+      ]
+    }
+  ],
+  "colors": [],
+  "assets": {},
+  "variables": [],
+  "groups": [],
+  "css": ""
+}

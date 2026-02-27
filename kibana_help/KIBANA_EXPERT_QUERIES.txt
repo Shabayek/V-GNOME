@@ -1,0 +1,79 @@
+# V-GNOME: Kibana & ES|QL Expert Cheat Sheet (v2)
+
+NOTE: In the Dev Tools Console, you must use the POST /_query syntax shown below.
+Open Kibana Dev Tools: http://localhost:5601/app/dev_tools#/console
+
+---
+
+## 1. ES|QL: Cluster Averages
+This query calculates the average GC content for every species cluster.
+
+```text
+POST /_query
+{
+  "query": """
+    FROM genomic_profiles
+    | STATS avg_gc = AVG(metrics.gc_content), count = COUNT(*) BY cluster_id
+    | SORT cluster_id ASC
+  """
+}
+```
+
+---
+
+## 2. ES|QL: High-Drift Species
+Finds clusters with the most variability (potential "unstable" species).
+
+```text
+POST /_query
+{
+  "query": """
+    FROM genomic_profiles
+    | STATS 
+        min_gc = MIN(metrics.gc_content), 
+        max_gc = MAX(metrics.gc_content), 
+        avg_gc = AVG(metrics.gc_content) 
+      BY cluster_id
+    | EVAL drift = max_gc - min_gc
+    | SORT drift DESC
+  """
+}
+```
+
+---
+
+## 3. ES|QL: Complexity Ranking
+Ranks species by coding robustness (optimization).
+
+```text
+POST /_query
+{
+  "query": """
+    FROM genomic_profiles
+    | STATS mean_robustness = AVG(metrics.coding_robustness) BY cluster_id
+    | SORT mean_robustness DESC
+  """
+}
+```
+
+---
+
+## 4. KQL (Kibana Query Language)
+Paste these into the search bar at the top of the **Discover** page.
+
+*   **Find High-GC Pathogens:**
+    `metrics.gc_content > 0.6`
+
+*   **Filter by a specific Biometric "Look":**
+    `face_parameters.glow_intensity > 0.8`
+
+---
+
+## 5. Quick Visualization "Recipe" (Kibana Lens)
+1. Go to **Analytics > Visualize Library**.
+2. Click **Create visualization** and select **Lens**.
+3. Select **genomic_profiles** as the data view.
+3. Drag **metrics.gc_content** to the X-axis.
+4. Drag **metrics.cpg_odds** to the Y-axis.
+5. Change chart type to **Scatter Plot**.
+6. Drag **cluster_id** to the "Break down by" field.

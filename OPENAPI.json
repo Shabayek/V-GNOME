@@ -1,0 +1,133 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "V-GNOME Genomic Curation Agent Tools",
+    "description": "A high-precision toolset for an AI Agent to fetch, analyze, and perform ES|QL-driven curation on genomic data using Elasticsearch as long-term memory.",
+    "version": "1.1.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8000",
+      "description": "V-GNOME Local Backend"
+    }
+  ],
+  "paths": {
+    "/fetch-ncbi/": {
+      "post": {
+        "summary": "Retrieve and Index Genome",
+        "description": "Retrieves sequence from NCBI, calculates 7D biometric metrics, and indexes into Elasticsearch.",
+        "operationId": "fetch_ncbi",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "accession": { "type": "string", "description": "NCBI ID (e.g. NC_000913)" },
+                  "target_cluster": { "type": "string" }
+                },
+                "required": ["accession"]
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/agent/anomalies": {
+      "get": {
+        "summary": "Detect Genomic Drift",
+        "description": "Uses ES|QL to calculate GC Content drift (Max-Min spread) across taxonomic clusters.",
+        "operationId": "detect_drift",
+        "parameters": [
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 10 } }
+        ],
+        "responses": { "200": { "description": "Drift report" } }
+      }
+    },
+    "/agent/sanity-check": {
+      "get": {
+        "summary": "Taxonomic Sanity Audit",
+        "description": "Finds clusters with high internal GC variance (noise), suggesting potential mislabeling.",
+        "operationId": "check_sanity",
+        "parameters": [
+          { "name": "variance_threshold", "in": "query", "schema": { "type": "number", "default": 0.05 } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 10 } }
+        ],
+        "responses": { "200": { "description": "Sanity report" } }
+      }
+    },
+    "/agent/stability-rank": {
+      "get": {
+        "summary": "Rank Environmental Stability",
+        "description": "Calculates Stability Index (GC + Robustness) via ES|QL EVAL to find extremophiles.",
+        "operationId": "rank_stability",
+        "parameters": [
+          { "name": "gc_weight", "in": "query", "schema": { "type": "number", "default": 0.7 } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 10 } }
+        ],
+        "responses": { "200": { "description": "Stability leaderboard" } }
+      }
+    },
+    "/agent/bottleneck-detect": {
+      "get": {
+        "summary": "Detect Population Bottlenecks",
+        "description": "Identifies species with unusually low Signature Entropy signatures.",
+        "operationId": "detect_bottlenecks",
+        "parameters": [
+          { "name": "entropy_threshold", "in": "query", "schema": { "type": "number", "default": 0.9 } }
+        ],
+        "responses": { "200": { "description": "Entropy report" } }
+      }
+    },
+    "/agent/query": {
+      "post": {
+        "summary": "Execute Custom ES|QL",
+        "description": "A sandbox tool allowing the Agent to run arbitrary raw ES|QL commands against the database.",
+        "operationId": "execute_esql",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": { "query": { "type": "string" } },
+                "required": ["query"]
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "Raw results" } }
+      }
+    },
+    "/genome/{sequence_hash}/reassign": {
+      "post": {
+        "summary": "Curation: Reassign Genome",
+        "description": "Moves an individual genome to a new taxonomic group in the Elasticsearch index.",
+        "operationId": "reassign_genome",
+        "parameters": [
+          { "name": "sequence_hash", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": { "target_cluster": { "type": "string" } },
+                "required": ["target_cluster"]
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "Update complete" } }
+      }
+    },
+    "/clusters/": {
+      "get": {
+        "summary": "Retrieve Taxonomic Memory",
+        "description": "Lists all unique clusters currently known to the Elasticsearch memory index.",
+        "operationId": "list_clusters",
+        "responses": { "200": { "description": "List of clusters" } }
+      }
+    }
+  }
+}

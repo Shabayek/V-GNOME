@@ -1,0 +1,55 @@
+{
+  "name": "V-GNOME Hackathon",
+  "id": "vgnome-hackathon-terminal",
+  "width": 1200,
+  "height": 800,
+  "page": 0,
+  "pages": [
+    {
+      "id": "page-0",
+      "name": "Main Terminal",
+      "style": {
+        "background": "#0F172A"
+      },
+      "elements": [
+        {
+          "id": "element-header",
+          "name": "element-header",
+          "type": "element",
+          "position": {
+            "top": 40,
+            "left": 40,
+            "height": 100,
+            "width": 1000,
+            "angle": 0,
+            "parent": null
+          },
+          "expression": "markdown \"# V-GNOME GENOMIC INTELLIGENCE\" | render css=\".canvasRenderEl h1 { color: #38BDF8; font-family: sans-serif; }\"",
+          "filter": ""
+        },
+        {
+          "id": "element-metric",
+          "name": "element-metric",
+          "type": "element",
+          "position": {
+            "top": 160,
+            "left": 40,
+            "height": 150,
+            "width": 300,
+            "angle": 0,
+            "parent": null
+          },
+          "expression": "essql query=\"SELECT count(*) as total FROM \\\"genomic_profiles\\\"\" | math \"total\" | metric label=\"Genomes Indexed\" | render",
+          "filter": ""
+        }
+      ],
+      "groups": []
+    }
+  ],
+  "colors": ["#38BDF8", "#2DD4BF"],
+  "assets": {},
+  "variables": [],
+  "groups": [],
+  "css": "",
+  "isSuspended": false
+}

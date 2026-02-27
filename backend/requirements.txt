@@ -1,0 +1,6 @@
+fastapi
+uvicorn
+python-multipart
+biopython
+numpy
+elasticsearch>=8.0.0,<9.0.0openai
