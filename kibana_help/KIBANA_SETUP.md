@@ -53,9 +53,3 @@ FROM genomic_profiles
 ```
 
 ---
-
-## 4. Hackathon Strategy: "Reliable Action"
-When submitting, demonstrate how you type `"Fetch NC_000913 and classify it"` into the Agent Terminal. 
-*   **Step 1**: Show the Agent Trace in your UI.
-*   **Step 2**: Show the updated record appearing in the **Kibana Discover** tab.
-*   **Step 3**: Explain that the agent used **Elasticsearch as its Long-Term Memory** to determine that the new genome didn't match the existing prototype.
